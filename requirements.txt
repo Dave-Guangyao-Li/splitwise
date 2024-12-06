@@ -1,0 +1,8 @@
+flask==2.2.3
+flask-sqlalchemy==3.0.3
+flask-login==0.6.2
+flask-migrate==4.0.4
+werkzeug==2.2.3
+email-validator==2.0.0
+python-dotenv==1.0.0
+sqlalchemy==2.0.7

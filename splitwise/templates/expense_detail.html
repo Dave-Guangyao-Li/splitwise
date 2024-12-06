@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h2>Expense Details</h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h4>Expense Information</h4>
+                    <p><strong>Description:</strong> {{ expense.description }}</p>
+                    <p><strong>Total Amount:</strong> ${{ expense.amount|round(2) }}</p>
+                    <p><strong>Date:</strong> {{ expense.date.strftime('%Y-%m-%d') }}</p>
+                    <p><strong>Paid By:</strong> {{ expense.payer.username }}</p>
+                    <p><strong>Split Type:</strong> {{ expense.split_type|title }} Split</p>
+                </div>
+                <div class="col-md-6">
+                    <h4>Split Breakdown</h4>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Member</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for split in expense.splits %}
+                            <tr>
+                                <td>{{ split.user.username }}</td>
+                                <td>${{ split.amount|round(2) }}</td>
+                                <td>
+                                    {% if split.user == expense.payer %}
+                                        <span class="badge bg-success">Paid</span>
+                                    {% else %}
+                                        <span class="badge bg-warning">Owes</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="text-center mt-3">
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Dashboard</h1>
+    {% if current_user.is_authenticated %}
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Your Groups</h2>
+            {% if current_user.group_memberships %}
+                <ul class="list-group">
+                {% for group in current_user.group_memberships %}
+                    <li class="list-group-item">
+                        {{ group.name }}
+                        <a href="{{ url_for('groups.group_detail', group_id=group.id) }}" class="btn btn-sm btn-info float-right">View</a>
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>You are not a member of any groups yet.</p>
+                <a href="{{ url_for('groups.create_group') }}" class="btn btn-primary">Create a Group</a>
+            {% endif %}
+        </div>
+        
+        <div class="col-md-6">
+            <h2>Recent Expenses</h2>
+            {% if current_user.expenses %}
+                <ul class="list-group">
+                {% for expense in current_user.expenses.limit(5) %}
+                    <li class="list-group-item">
+                        {{ expense.description }} 
+                        <span class="badge bg-primary float-right">${{ expense.amount|round(2) }}</span>
+                    </li>
+                {% endfor %}
+                </ul>
+                <a href="{{ url_for('expenses.list_expenses') }}" class="btn btn-sm btn-secondary mt-2">View All Expenses</a>
+            {% else %}
+                <p>No expenses yet.</p>
+                <a href="{{ url_for('expenses.add_expense') }}" class="btn btn-primary">Add Expense</a>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

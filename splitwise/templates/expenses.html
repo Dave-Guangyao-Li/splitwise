@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Your Expenses</h1>
+    
+    <div class="row mb-3">
+        <div class="col">
+            <a href="{{ url_for('expenses.add_expense') }}" class="btn btn-primary">Add New Expense</a>
+        </div>
+    </div>
+    
+    {% if expenses %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Group</th>
+                    <th>Split Type</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for expense in expenses %}
+                <tr>
+                    <td>{{ expense.date.strftime('%Y-%m-%d') }}</td>
+                    <td>{{ expense.description }}</td>
+                    <td>${{ expense.amount|round(2) }}</td>
+                    <td>{{ expense.group.name if expense.group else 'No Group' }}</td>
+                    <td>{{ expense.split_type|title }} Split</td>
+                    <td>
+                        <a href="{{ url_for('expenses.expense_detail', expense_id=expense.id) }}" class="btn btn-sm btn-info">Details</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="alert alert-info">
+            You haven't added any expenses yet. 
+            <a href="{{ url_for('expenses.add_expense') }}" class="alert-link">Add your first expense</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
