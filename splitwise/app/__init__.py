@@ -3,8 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from config import Config
+from .models import db, User
 
-db = SQLAlchemy()
 login_manager = LoginManager()
 migrate = Migrate()
 
@@ -21,14 +21,16 @@ def create_app(config_class=Config):
     login_manager.login_view = 'auth.login'
     login_manager.login_message_category = 'info'
 
+    # User loader
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))
+
     # Import and register blueprints
     from .routes import main, auth, groups, expenses
     app.register_blueprint(main.bp)
     app.register_blueprint(auth.bp)
     app.register_blueprint(groups.bp)
     app.register_blueprint(expenses.bp)
-
-    # Import models to ensure they are recognized by Flask-Migrate
-    from .models import User, Group, Expense, ExpenseSplit
 
     return app
